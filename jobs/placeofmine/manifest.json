@@ -1,0 +1,17 @@
+{
+	"name": "placeofmine",
+	"main": "main.py",
+	"requirements": "requirements.txt",
+	"DEV": {
+		"config": {
+			"inputRoot": ".",
+			"outputRoot": "/tmp/Apartments/stream",
+			"args": {
+				"url": "http://www.placeofmine.com/partners/uiuc/czdfeed.csv",
+				"outputCSV": "rents.csv",
+				"username": "uiuc",
+				"password": "hfn1923n"
+			}
+		}
+	}
+}
