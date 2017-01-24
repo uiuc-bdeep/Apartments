@@ -1,0 +1,59 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: 'python'
+    tag: '2'
+
+inputs:
+- name: apt-scripts
+
+outputs:
+- name: rent-data
+
+run:
+  path: ./apt-scripts/jobs/pull-rents/pull-rents.sh
+
+params:
+  PULL_RENTS_USER: uiuc
+  PULL_RENTS_PASS: hfn1923n
+  PULL_RENTS_SOURCE_URL: http://www.placeofmine.com/partners/uiuc/czdfeed.csv
+  PULL_RENTS_DEST_URL: rent-data/rents.csv
+
+resource_types:
+- name: samba-resource
+  type: docker-image
+  source:
+      repository: airtonix/concourse-resource-samba
+      tag: latest
+
+resources:
+- name: apt-scripts
+  type: git
+  source:
+    uri: https://github.com/uiuc-bdeep/Apartments.git
+- name: shared-drive
+  type: samba-resource
+  source:
+    server: netshare.uiuc-bdeep.org
+    share: storage
+    user : sksulli2
+    password: a4S94RCd
+
+jobs:
+- name: pull-rent-data
+  plan:
+  - get: apt-scripts
+  - get: shared-drive
+    params: { "path" : "/share/projects/Apartments/stream/" }
+  - task: crawl-rents
+    file: apt-scripts/jobs/crawl-rents/crawl-rents.yml
+  - put: shared-drive
+    params: { "path" : "/share/projects/Apartments/stream/" }
+- name: merge-data
+  plan:
+  - get: shared-drive
+    params: { "path" : "/share/projects/Apartments/stream/" }
+  - put: shared-drive
+    params: { "path" : "/share/projects/Apartments/views/vizualization" }

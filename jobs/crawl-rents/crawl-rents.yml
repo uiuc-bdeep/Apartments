@@ -1,0 +1,12 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: python, tags: '2'}
+
+inputs:
+- name: apt-scripts
+- name: shared-drive
+
+run:
+  path: apt-scripts/jobs/crawl-rents/crawl-rents.sh
