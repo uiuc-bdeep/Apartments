@@ -16,10 +16,14 @@ run:
   path: ./apt-scripts/jobs/pull-rents/pull-rents.sh
 
 params:
-  PULL_RENTS_USER: uiuc
-  PULL_RENTS_PASS: hfn1923n
-  PULL_RENTS_SOURCE_URL: http://www.placeofmine.com/partners/uiuc/czdfeed.csv
-  PULL_RENTS_DEST_URL: rent-data/rents.csv
+  PULL_RENTS_USERNAME: <%= ENV['PULL_RENTS_USERNAME'] %>
+  PULL_RENTS_PASSWORD: <%= ENV['PULL_RENTS_PASSWORD'] %>
+  PULL_RENTS_SOURCE_URL: <%= ENV['PULL_RENTS_SOURCE_URL'] %>
+  PULL_RENTS_DEST_URL: <%= ENV['PULL_RENTS_DEST_URL'] %>
+  SHARED_DRIVE_PASSWORD: <%= ENV['SHARED_DRIVE_PASSWORD'] %>
+  SHARED_DRIVE_USERNAME: <%= ENV['SHARED_DRIVE_USERNAME'] %>
+  SHARED_DRIVE_URL: <%= ENV['SHARED_DRIVE_URL'] %>
+  APT_SCRIPTS_URL: <%= ENV['APT_SCRIPTS_URL'] %>
 
 resource_types:
 - name: samba-resource
@@ -32,14 +36,14 @@ resources:
 - name: apt-scripts
   type: git
   source:
-    uri: https://github.com/uiuc-bdeep/Apartments.git
+    uri: <%= ENV['APT_SCRIPTS_URL'] %>
 - name: shared-drive
   type: samba-resource
   source:
-    server: netshare.uiuc-bdeep.org
+    server: <%= ENV['SHARED_DRIVE_URL'] %>
     share: storage
-    user : sksulli2
-    password: a4S94RCd
+    user : <%= ENV['SHARED_DRIVE_USERNAME'] %>
+    password: <%= ENV['SHARED_DRIVE_PASSWORD'] %>
 
 jobs:
 - name: pull-rent-data
